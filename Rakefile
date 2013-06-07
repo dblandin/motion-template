@@ -55,6 +55,8 @@ Motion::Project::App.setup do |app|
   app_files = Dir.glob('./app/**/*.rb')
   app.files = (app.files - app_files) + properties.additional_files + app_files
 
+  app.info_plist['UIStatusBarHidden'] = true
+
   app.pods do
     pod 'CocoaLumberjack', '~> 1.6.2'
   end

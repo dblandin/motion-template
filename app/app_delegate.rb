@@ -1,4 +1,6 @@
 class AppDelegate
+  SPLASH_FADE_DURATION = 1.0
+
   attr_accessor :window
 
   def application(application, didFinishLaunchingWithOptions: launch_options)
@@ -12,13 +14,40 @@ class AppDelegate
     true
   end
 
+  private
+
   def initialize_main_controller
     self.window = UIWindow.alloc.initWithFrame(UIScreen.mainScreen.bounds)
 
     configure_navigator
 
     window.setRootViewController(Navigator.shared.navigation_controller)
+    window.rootViewController.view.addSubview(splash_screen)
+
     window.makeKeyAndVisible
+
+    UIView.transitionWithView(window,
+                              duration: SPLASH_FADE_DURATION,
+                               options: UIViewAnimationOptionTransitionNone,
+                            animations: splash_animations_callback,
+                            completion: splash_completion_callback)
+  end
+
+  def splash_completion_callback
+    lambda { |finished|
+      splash_screen.removeFromSuperview
+      @_splash_screen = nil
+
+      UIApplication.sharedApplication.setStatusBarHidden(false, animated:false)
+    }
+  end
+
+  def splash_animations_callback
+    lambda { splash_screen.alpha = 0 }
+  end
+
+  def splash_screen
+    @_splash_screen ||= UIImageView.alloc.initWithImage(UIImage.imageNamed("Default.png"))
   end
 
   def configure_navigator
