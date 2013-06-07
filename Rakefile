@@ -59,5 +59,6 @@ Motion::Project::App.setup do |app|
 
   app.pods do
     pod 'CocoaLumberjack', '~> 1.6.2'
+    pod 'SVProgressHUD',   '~> 0.9'
   end
 end
