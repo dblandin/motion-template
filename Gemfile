@@ -7,6 +7,7 @@ gem 'routable',             '~> 0.2'
 gem 'motion-require',       '~> 0.0.6'
 gem 'formotion',            '~> 1.3.1'
 gem 'motion-logger',        '~> 0.1.3'
+gem 'motion-blitz',         '~> 0.0.1'
 gem 'dotenv',               '~> 0.7.0'
 
 group :development do
