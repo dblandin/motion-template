@@ -3,6 +3,7 @@ build
 bin/
 .sass-cache/
 .dat*
+app/testflight_launcher.rb
 
 # Rubygems
 vendor/ruby
