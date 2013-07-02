@@ -37,8 +37,6 @@ class AppDelegate
     lambda { |finished|
       splash_screen.removeFromSuperview
       @_splash_screen = nil
-
-      UIApplication.sharedApplication.setStatusBarHidden(false, animated:false)
     }
   end
 
