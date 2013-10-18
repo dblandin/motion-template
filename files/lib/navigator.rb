@@ -1,24 +1,36 @@
 class Navigator
-  attr_accessor :router, :current_route, :previous_route
+  attr_reader :router
 
-  def self.shared
-    @instance ||= Navigator.new
-  end
+  class << self
+    def shared
+      @instance ||= Navigator.new
+    end
 
-  def self.config(&block)
-    block.call(shared)
+    def config(&block)
+      block.call(shared)
+    end
   end
 
   def initialize(options = {})
-    self.router = options[:router] || Routable::Router.router
+    Log.info 'Navigator initializing'
+
+    @router = options[:router] || Routable::Router.router
+  end
+
+  def map(&block)
+    block.call(router)
+  end
+
+  def clear_cache
+    router.shared_vc_cache.clear
   end
 
   def navigation_controller
     router.navigation_controller
   end
 
-  def map(&block)
-    block.call(router)
+  def start!
+    LocalRoutes.new(router).map_urls
   end
 
   def register_nav_controller(nav_controller)
@@ -26,23 +38,29 @@ class Navigator
   end
 
   def open(route, animated = true, &block)
-    unless route === current_route
-      self.previous_route = current_route
-      self.current_route  = route
+    unless route == history.last
+      history << route
 
       router.open(route, animated, &block)
     end
   end
 
+  def history
+    @history ||= []
+  end
+
+  def push(controller)
+    navigation_controller.pushViewController(controller, animated: true)
+  end
+
   def pop
-    swap_current_previous_routes
+    history.pop
 
     router.pop
   end
 
-  private
-
-  def swap_current_previous_routes
-    self.current_route, self.previous_route = previous_route, current_route
+  def current_route
+    history.last
   end
 end
+

@@ -2,23 +2,22 @@
 $:.unshift('/Library/RubyMotion/lib')
 require 'motion/project/template/ios'
 require 'bundler'
+require 'bubble-wrap/core'
+Dir.glob('./config/*.rb').each { |file| require file }
 
 if ARGV.join(' ') =~ /spec/
   Bundler.require :default, :development, :spec
 elsif ARGV.join(' ') =~ /archive/
   Bundler.require :default
 else
-  Bundler.require :default, :development
+  require 'sugarcube'
   require 'sugarcube-repl'
+  Bundler.require :default, :development
 end
 
-require 'bubble-wrap/core'
-require 'dotenv'
-require './config/app_properties'
+Motion::Require.all(Dir.glob('lib/**/*.rb') + Dir.glob('app/**/*.rb'))
 
-Motion::Require.all
-Dotenv.load
-
+environment_variables = Dotenv.load
 Motion::Project::App.setup do |app|
   properties = AppProperties.new
 
@@ -42,18 +41,12 @@ Motion::Project::App.setup do |app|
   end
 
   app.development do
-    app.testflight do
-      app.testflight.api_token  = ENV['TESTFLIGHT_API_TOKEN']
-      app.testflight.team_token = ENV['TESTFLIGHT_TEAM_TOKEN']
-      app.testflight.app_token  = ENV['TESTFLIGHT_APP_TOKEN']
-    end
   end
 
   app.frameworks += properties.additional_frameworks
   app.libs       += properties.additional_libraries
 
-  app_files = Dir.glob('./app/**/*.rb')
-  app.files = (app.files - app_files) + properties.additional_files + app_files
+  environment_variables.each { |key, value| app.info_plist["ENV_#{key}"] = value }
 
   app.pods do
     pod 'CocoaLumberjack', '~> 1.6.2'

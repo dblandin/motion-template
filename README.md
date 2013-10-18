@@ -4,7 +4,6 @@
 
 - Bundler/Cocoapods support
 - Dotenv (Autoload environment variables in .env)
-- Testflight
 - CocoaLumberjack logging and Motion::Log wrapper
 - SVProgressHUD and Motion::Blitz wrapper
 - Notification dispatch/observe wrapper
@@ -14,7 +13,7 @@
 
 ### Create an application from the template
 
-``` bash
+```
 # First install...
 motion create --template=https://github.com/dblandin/motion-template.git <app_name>
 
@@ -26,7 +25,8 @@ motion create --template=motion-template <app_name>
 
 ### Install dependencies and run!
 
-``` bash
-bundle install --path=vendor
-rake
+```
+$ bundle install --path=vendor
+$ rake pod:install
+$ rake
 ```

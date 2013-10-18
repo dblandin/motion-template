@@ -24,7 +24,7 @@ class Log < Motion::Log
     end
 
     def loggers
-      @_loggers ||= []
+      @loggers ||= []
     end
 
     private
